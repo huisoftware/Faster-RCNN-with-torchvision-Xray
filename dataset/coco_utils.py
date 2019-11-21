@@ -6,10 +6,12 @@ import torch
 import torch.utils.data
 import torchvision
 
-from pycocotools import mask as coco_mask
-from pycocotools.coco import COCO
+from dataset.cocomyself import mask as coco_mask
+from dataset.cocomyself.coco import COCO
 
-import transforms as T
+from .coco import CocoDetection as MySelfCocoDetection
+
+import dataset.transforms as T
 
 
 class FilterAndRemapCocoCategories(object):
@@ -69,7 +71,7 @@ class ConvertCocoPolysToMask(object):
         classes = torch.tensor(classes, dtype=torch.int64)
 
         segmentations = [obj["segmentation"] for obj in anno]
-        masks = convert_coco_poly_to_mask(segmentations, h, w)
+        # masks = convert_coco_poly_to_mask(segmentations, h, w)
 
         keypoints = None
         if anno and "keypoints" in anno[0]:
@@ -82,14 +84,14 @@ class ConvertCocoPolysToMask(object):
         keep = (boxes[:, 3] > boxes[:, 1]) & (boxes[:, 2] > boxes[:, 0])
         boxes = boxes[keep]
         classes = classes[keep]
-        masks = masks[keep]
+        #masks = masks[keep]
         if keypoints is not None:
             keypoints = keypoints[keep]
 
         target = {}
         target["boxes"] = boxes
         target["labels"] = classes
-        target["masks"] = masks
+        #target["masks"] = masks
         target["image_id"] = image_id
         if keypoints is not None:
             target["keypoints"] = keypoints
@@ -129,7 +131,7 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
             return True
         return False
 
-    assert isinstance(dataset, torchvision.datasets.CocoDetection)
+    # assert isinstance(dataset, torchvision.datasets.CocoDetection)
     ids = []
     for ds_idx, img_id in enumerate(dataset.ids):
         ann_ids = dataset.coco.getAnnIds(imgIds=img_id, iscrowd=None)
@@ -196,16 +198,16 @@ def convert_to_coco_api(ds):
 
 def get_coco_api_from_dataset(dataset):
     for _ in range(10):
-        if isinstance(dataset, torchvision.datasets.CocoDetection):
+        if isinstance(dataset, MySelfCocoDetection):
             break
         if isinstance(dataset, torch.utils.data.Subset):
             dataset = dataset.dataset
-    if isinstance(dataset, torchvision.datasets.CocoDetection):
+    if isinstance(dataset, MySelfCocoDetection):
         return dataset.coco
     return convert_to_coco_api(dataset)
 
 
-class CocoDetection(torchvision.datasets.CocoDetection):
+class CocoDetection(MySelfCocoDetection):
     def __init__(self, img_folder, ann_file, transforms):
         super(CocoDetection, self).__init__(img_folder, ann_file)
         self._transforms = transforms
@@ -215,7 +217,7 @@ class CocoDetection(torchvision.datasets.CocoDetection):
         image_id = self.ids[idx]
         target = dict(image_id=image_id, annotations=target)
         if self._transforms is not None:
-            img, target = self._transforms(img, target)
+            img, target = self._transforms(image=img, target=target)
         return img, target
 
 
@@ -249,3 +251,29 @@ def get_coco(root, image_set, transforms, mode='instances'):
 
 def get_coco_kp(root, image_set, transforms):
     return get_coco(root, image_set, transforms, mode="person_keypoints")
+
+
+def get_myselfXray(root, image_set, transforms, mode='instances'):
+    PATHS = {
+        "train": ("train"+os.sep+"Image", "train"+os.sep+"Annotation"),
+        "val": ("val"+os.sep+"Image", "val"+os.sep+"Annotation"),
+    }
+
+    t = [ConvertCocoPolysToMask()]
+
+    if transforms is not None:
+        t.append(transforms)
+    transforms = T.Compose(t)
+
+    img_folder, ann_file = PATHS[image_set]
+    img_folder = os.path.join(root, img_folder)
+    ann_file = os.path.join(root, ann_file)
+
+    dataset = CocoDetection(img_folder, ann_file, transforms=transforms)
+
+    if image_set == "train":
+        dataset = _coco_remove_images_without_annotations(dataset)
+
+    # dataset = torch.utils.data.Subset(dataset, [i for i in range(500)])
+
+    return dataset

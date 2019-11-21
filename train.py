@@ -7,7 +7,7 @@ import time
 import torch
 import torch.utils.data
 from torch import nn
-from dataset.coco_utils import get_coco, get_coco_kp
+from dataset.coco_utils import get_coco, get_coco_kp, get_myselfXray
 from engine import train_one_epoch, evaluate
 from dataset.group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
 import argparse
@@ -17,9 +17,11 @@ import cv2
 import random
 
 def get_args():
+    # python -m torch.distributed.launch --use_env train.py --data_path 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXray' --dataset 'myselfXray' --device 'cpu' --epochs 200 --lr 0.001 --world-size 3 --b 4 --output-dir 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXrayOutPut'
+    # python detect.py --model_path result/model_13.pth --image_path imgs/1.jpg
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Training')
 
-    parser.add_argument('--data_path', default='/public/yzy/coco/2017/', help='dataset path')
+    parser.add_argument('--data_path', default=None, help='dataset path')
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
     parser.add_argument('--dataset', default='coco', help='dataset')
     parser.add_argument('--device', default='cuda', help='device')
@@ -41,14 +43,14 @@ def get_args():
     parser.add_argument('--resume', default='', help='resume from checkpoint')
     parser.add_argument('--test_only', default=False, type=bool, help='resume from checkpoint')
     parser.add_argument('--output-dir', default='./result', help='path where to save')
-    parser.add_argument('--aspect-ratio-group-factor', default=0, type=int)
+    parser.add_argument('--aspect-ratio-group-factor', default=-1, type=int)
     parser.add_argument(
         "--pretrained",
         dest="pretrained",
         help="Use pre-trained models from the modelzoo",
         action="store_true",
     )
-    parser.add_argument('--distributed', default=True, help='if distribute or not')
+    parser.add_argument('--distributed', default=False, help='if distribute or not')
     parser.add_argument('--parallel', default=False, help='if distribute or not')
     # distributed training parameters
     parser.add_argument('--world-size', default=1, type=int,
@@ -60,13 +62,15 @@ def get_args():
     return args
 
 
-def get_dataset(name, image_set, transform):
+def get_dataset(name, image_set, transform,data_path=None):
     paths = {
-        "coco": ('/public/yzy/coco/2017/', get_coco, 91),
-        "coco_kp": ('/datasets01/COCO/022719/', get_coco_kp, 2)
+        "coco": ('/dataset/coco/2017/', get_coco, 91),
+        "coco_kp": ('/datasets01/COCO/022719/', get_coco_kp, 2),
+        "myselfXray": ('/myselfXray/', get_myselfXray, 2)
     }
     p, ds_fn, num_classes = paths[name]
-
+    if data_path is not None:
+        p = data_path
     ds = ds_fn(p, image_set=image_set, transforms=transform)
     return ds, num_classes
 
@@ -87,8 +91,8 @@ def main():
 
     # Data loading
     print("Loading data")
-    dataset, num_classes = get_dataset(args.dataset, "train", get_transform(train=True))
-    dataset_test, _ = get_dataset(args.dataset, "val", get_transform(train=False))    
+    dataset, num_classes = get_dataset(args.dataset, "train", get_transform(train=True), data_path=args.data_path)
+    dataset_test, _ = get_dataset(args.dataset, "val", get_transform(train=False), data_path=args.data_path)
 
     print("Creating data loaders")
     if args.distributed:
@@ -113,7 +117,6 @@ def main():
         dataset_test, batch_size=args.b,
         sampler=test_sampler, num_workers=args.workers,
         collate_fn=utils.collate_fn)
-
     # Model creating
     print("Creating model")
     # model = models.__dict__[args.model](num_classes=num_classes, pretrained=args.pretrained)   

@@ -16,6 +16,8 @@ def get_args():
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
     parser.add_argument('--dataset', default='coco', help='model')
     parser.add_argument('--score', type=float, default=0.8, help='objectness score threshold')
+    parser.add_argument('--gpu', type=str, default='0', help='gpu cuda')
+
     args = parser.parse_args()
 
     return args
@@ -37,7 +39,10 @@ def main():
     # Model creating
     print("Creating model")
     model = torchvision.models.detection.__dict__[args.model](num_classes=num_classes, pretrained=False)  
-    model = model.cuda()
+    if args.gpu =='0':
+        model = model.cpu()
+    else:
+        model = model.cuda()
 
     model.eval()
 
