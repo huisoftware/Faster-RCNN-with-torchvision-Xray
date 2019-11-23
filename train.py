@@ -17,6 +17,7 @@ import cv2
 import random
 
 def get_args():
+    #--data_path D:\sysfile\desktop\cocotest\coco2017\coco\2017 --dataset coco --device cpu --epochs 2 --lr 0.001 --world-size 0 --b 1 --output-dir D:\sysfile\desktop\cocotest\coco2017out -j 1
     # python -m torch.distributed.launch --use_env train.py --data_path 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXray' --dataset 'myselfXray' --device 'cpu' --epochs 200 --lr 0.001 --world-size 3 --b 4 --output-dir 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXrayOutPut'
     # python detect.py --model_path result/model_13.pth --image_path imgs/1.jpg
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Training')
@@ -36,7 +37,7 @@ def get_args():
     parser.add_argument('--wd', '--weight-decay', default=1e-4, type=float,
                         metavar='W', help='weight decay (default: 1e-4)',
                         dest='weight_decay')
-    parser.add_argument('--print-freq', default=20, type=int, help='print frequency')
+    parser.add_argument('--print-freq', default=1, type=int, help='print frequency')
     parser.add_argument('--lr-step-size', default=8, type=int, help='decrease lr every step-size epochs')
     parser.add_argument('--lr-steps', default=[8, 11], nargs='+', type=int, help='decrease lr every step-size epochs')
     parser.add_argument('--lr-gamma', default=0.1, type=float, help='decrease lr by a factor of lr-gamma')
