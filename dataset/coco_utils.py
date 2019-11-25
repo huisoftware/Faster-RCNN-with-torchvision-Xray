@@ -257,6 +257,7 @@ def get_myselfXray(root, image_set, transforms, mode='instances'):
     PATHS = {
         "train": ("train"+os.sep+"Image", "train"+os.sep+"Annotation"),
         "val": ("val"+os.sep+"Image", "val"+os.sep+"Annotation"),
+        "test": ("val" + os.sep + "Image", "val" + os.sep + "Annotation")
     }
 
     t = [ConvertCocoPolysToMask()]

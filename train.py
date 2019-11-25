@@ -67,7 +67,7 @@ def get_dataset(name, image_set, transform,data_path=None):
     paths = {
         "coco": ('/dataset/coco/2017/', get_coco, 91),
         "coco_kp": ('/datasets01/COCO/022719/', get_coco_kp, 2),
-        "myselfXray": ('/myselfXray/', get_myselfXray, 2)
+        "myselfXray": ('/myselfXray/', get_myselfXray, 3)
     }
     p, ds_fn, num_classes = paths[name]
     if data_path is not None:

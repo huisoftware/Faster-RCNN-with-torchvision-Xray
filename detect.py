@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import sys
 sys.path.append('./')
-import coco_names
 import random
 
 def get_args():
@@ -14,7 +13,6 @@ def get_args():
     parser.add_argument('--model_path', type=str, default='./result/model_19.pth', help='model path')
     parser.add_argument('--image_path', type=str, default='./test.jpg', help='image path')
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
-    parser.add_argument('--dataset', default='coco', help='model')
     parser.add_argument('--score', type=float, default=0.8, help='objectness score threshold')
     parser.add_argument('--gpu', type=str, default='0', help='gpu cuda')
 
@@ -32,13 +30,12 @@ def random_color():
 def main():
     args = get_args()
     input = []
-    if args.dataset == 'coco':
-        num_classes = 91
-        names = coco_names.names
+    names = {'0': 'background', '1': 'core', '2': 'coreless'}
+
         
     # Model creating
     print("Creating model")
-    model = torchvision.models.detection.__dict__[args.model](num_classes=num_classes, pretrained=False)  
+    model = torchvision.models.detection.__dict__[args.model](num_classes=3, pretrained=False)
     if args.gpu =='0':
         model = model.cpu()
     else:
@@ -50,7 +47,11 @@ def main():
     model.load_state_dict(save['model'])
     src_img = cv2.imread(args.image_path)
     img = cv2.cvtColor(src_img,cv2.COLOR_BGR2RGB)
-    img_tensor = torch.from_numpy(img/255.).permute(2,0,1).float().cuda()
+
+    if args.gpu == '0':
+        img_tensor = torch.from_numpy(img / 255.).permute(2, 0, 1).float()
+    else:
+        img_tensor = torch.from_numpy(img / 255.).permute(2, 0, 1).float().cuda()
     input.append(img_tensor)
     out = model(input)
     boxes = out[0]['boxes']
