@@ -10,8 +10,8 @@ import random
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Detection')
 
-    parser.add_argument('--model_path', type=str, default='./result/model_19.pth', help='model path')
-    parser.add_argument('--image_path', type=str, default='./test.jpg', help='image path')
+    parser.add_argument('--model_path', type=str, default='D:\sysfile\desktop\mlbighomework\model_19.pth', help='model path')
+    parser.add_argument('--image_path', type=str, default='D:\sysfile\desktop\mlbighomework\output/test\Image\core_battery00000004.jpg', help='image path')
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
     parser.add_argument('--score', type=float, default=0.8, help='objectness score threshold')
     parser.add_argument('--gpu', type=str, default='0', help='gpu cuda')
@@ -42,8 +42,12 @@ def main():
         model = model.cuda()
 
     model.eval()
+    if args.gpu =='0':
+        save = torch.load(args.model_path,map_location='cpu')
+    else:
+        save = torch.load(args.model_path)
 
-    save = torch.load(args.model_path)
+
     model.load_state_dict(save['model'])
     src_img = cv2.imread(args.image_path)
     img = cv2.cvtColor(src_img,cv2.COLOR_BGR2RGB)
