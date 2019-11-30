@@ -545,7 +545,7 @@ def evaluate_detections(box_list, output_dir, dataset):
 #     global devkit_path
 #     devkit_path = args.save_folder
 
-
+# --model_path D:\sysfile\desktop\mlbighomework\model_19.pth --data_path D:\sysfile\desktop\mlbighomework\output --cache_path D:\sysfile\desktop\mlbighomework\cache --out_path D:\sysfile\desktop\mlbighomework\output2 --gpu 0
 if __name__ == '__main__':
     args = get_args()
 
