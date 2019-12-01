@@ -10,6 +10,7 @@ from train import get_dataset,get_transform
 import shutil
 import time
 from PIL import Image
+import gc
 loader = transforms.Compose([
     transforms.ToTensor()])
 
@@ -419,13 +420,14 @@ def test_net(data_path, cache_path, out_path, model, gpu, dataset, im_size=300, 
     for i in range(num_images):
         img, target = dataset[i]
 
-        im_det = tensor_to_PIL(img)
-        im_gt = tensor_to_PIL(img)
+        #im_det = tensor_to_PIL(img)
+        #im_gt = tensor_to_PIL(img)
 
         _t['im_detect'].tic()
 
         input = []
         input.append(img)
+        gc.collect()
         out = model(input)
         detections = out[0]
 
@@ -436,15 +438,23 @@ def test_net(data_path, cache_path, out_path, model, gpu, dataset, im_size=300, 
         scores = out[0]['scores']
 
         detect_time = _t['im_detect'].toc(average=False)
-        for idx in range(boxes.shape[0]):
-            x1, y1, x2, y2 = boxes[idx][0], boxes[idx][1], boxes[idx][2], boxes[idx][3]
-            cls_dets1 = [x1, y1, x2, y2, scores[idx]]
-            if not all_boxes[labels[idx].item()][i]:
-                all_boxes[labels[idx].item()][i].append(cls_dets1)
-            else:
-                cls_dets = []
-                cls_dets.append(cls_dets1)
-                all_boxes[labels[idx].item()][i] = cls_dets
+
+
+        x1, y1, x2, y2 = boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3]
+        cls_dets1 = [x1, y1, x2, y2, scores[0]]
+        all_boxes[labels[0].item()][i].append(cls_dets1)
+
+        # for idx in range(boxes.shape[0]):
+        #     x1, y1, x2, y2 = boxes[idx][0], boxes[idx][1], boxes[idx][2], boxes[idx][3]
+        #     cls_dets1 = [x1, y1, x2, y2, scores[idx]]
+        #     all_boxes[labels[idx].item()][i].append(cls_dets1)
+
+            # if not all_boxes[labels[idx].item()][i]:
+            #     all_boxes[labels[idx].item()][i].append(cls_dets1)
+            # else:
+            #     cls_dets = []
+            #     cls_dets.append(cls_dets1)
+            #     all_boxes[labels[idx].item()][i] = cls_dets
                         #
         # for idx in range(boxes.shape[0]):
         #     if scores[idx] >= args.score:
