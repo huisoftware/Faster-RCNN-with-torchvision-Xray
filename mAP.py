@@ -66,6 +66,8 @@ def parse_rec(filename, imgpath):
     """ Parse a PASCAL VOC xml file """
     # tree = ET.parse(filename)
     # filename = filename[:-3] + 'txt'
+    if filename=='core_battery00000191':
+        print(filename)
     filename1 = filename
     filename = filename+".txt"
     # filename = filename.replace('.xml', '.txt')
@@ -79,7 +81,6 @@ def parse_rec(filename, imgpath):
     # imagename1 = imagename0.replace('.txt', '.jpg')  # jpg form
     # imagename2 = imagename0.replace('.txt', '.jpg')
     imagename1 = imgpath+os.sep+filename1+'.jpg'
-    imagename2 = imgpath+os.sep+filename1+'.jpg'
 
     objects = []
     img = cv2.imread(imagename1)
@@ -121,7 +122,9 @@ def parse_rec(filename, imgpath):
                           float(ymin) - 1,
                           float(xmax) - 1,
                           float(ymax) - 1]
-        objects.append(obj_struct)
+            objects.append(obj_struct)
+
+
 
     '''
     for obj in tree.findall('object'):
@@ -431,7 +434,7 @@ def test_net(data_path, cache_path, out_path, model, gpu, dataset, im_size=300, 
         out = model(input)
         detections = out[0]
 
-
+        print(i)
 
         boxes = out[0]['boxes']
         labels = out[0]['labels']
@@ -439,10 +442,15 @@ def test_net(data_path, cache_path, out_path, model, gpu, dataset, im_size=300, 
 
         detect_time = _t['im_detect'].toc(average=False)
 
+        try:
+            x1, y1, x2, y2 = boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3]
+            cls_dets1 = [x1, y1, x2, y2, scores[0]]
+            all_boxes[labels[0].item()][i].append(cls_dets1)
+        except IndexError:
+            x1, y1, x2, y2 = 0, 0, 0, 0
+            cls_dets1 = [x1, y1, x2, y2, 0]
+            all_boxes[1][i].append(cls_dets1)
 
-        x1, y1, x2, y2 = boxes[0][0], boxes[0][1], boxes[0][2], boxes[0][3]
-        cls_dets1 = [x1, y1, x2, y2, scores[0]]
-        all_boxes[labels[0].item()][i].append(cls_dets1)
 
         # for idx in range(boxes.shape[0]):
         #     x1, y1, x2, y2 = boxes[idx][0], boxes[idx][1], boxes[idx][2], boxes[idx][3]
@@ -556,6 +564,7 @@ def evaluate_detections(box_list, output_dir, dataset):
 #     devkit_path = args.save_folder
 
 # --model_path D:\sysfile\desktop\mlbighomework\model_19.pth --data_path D:\sysfile\desktop\mlbighomework\output --cache_path D:\sysfile\desktop\mlbighomework\cache --out_path D:\sysfile\desktop\mlbighomework\output2 --gpu 0
+#
 if __name__ == '__main__':
     args = get_args()
 
@@ -570,22 +579,26 @@ if __name__ == '__main__':
     global imagesetfile
     imagesetfile = args.data_path+os.sep+"test"+os.sep+"Image"
 
-    # Model creating
-    print("Creating model")
-    model = torchvision.models.detection.__dict__[args.model](num_classes=len(names), pretrained=False)
-    if args.gpu == '0':
-        model = model.cpu()
-    else:
-        model = model.cuda()
+    do_python_eval(args.out_path, use_07=False)
 
-    model.eval()
-    if args.gpu == '0':
-        save = torch.load(args.model_path,map_location='cpu')
-    else:
-        save = torch.load(args.model_path)
+    # # Model creating
+    # print("Creating model")
+    # model = torchvision.models.detection.__dict__[args.model](num_classes=len(names), pretrained=False)
+    # if args.gpu == '0':
+    #     model = model.cpu()
+    # else:
+    #     model = model.cuda()
+    #
+    # model.eval()
+    # if args.gpu == '0':
+    #     save = torch.load(args.model_path,map_location='cpu')
+    # else:
+    #     save = torch.load(args.model_path)
+    #
+    # model.load_state_dict(save['model'])
+    #
+    # dataset, _ = get_dataset("myselfXray", "test", get_transform(train=False), data_path=args.data_path)
+    # with torch.no_grad():
+    #     test_net(args.data_path, args.cache_path, args.out_path, model, args.gpu, dataset)
 
-    model.load_state_dict(save['model'])
 
-    dataset, _ = get_dataset("myselfXray", "test", get_transform(train=False), data_path=args.data_path)
-
-    test_net(args.data_path, args.cache_path, args.out_path, model, args.gpu, dataset)
