@@ -22,10 +22,10 @@ labelmap = ['core', 'coreless']
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn mAP')
 
-    parser.add_argument('--model_path', type=str, default='./result/model_19.pth', help='model path')
-    parser.add_argument('--data_path', type=str, default='./test.jpg', help='image path')
-    parser.add_argument('--cache_path', type=str, default='./test.jpg', help='image path')
-    parser.add_argument('--out_path', type=str, default='./test.jpg', help='image path')
+    parser.add_argument('--model_path', type=str, default='D:\sysfile\desktop\mlbighomework\model_19.pth', help='model path')
+    parser.add_argument('--data_path', type=str, default='D:\sysfile\desktop\mlbighomework\output', help='image path')
+    parser.add_argument('--cache_path', type=str, default='D:\sysfile\desktop\mlbighomework\cache', help='image path')
+    parser.add_argument('--out_path', type=str, default='D:\sysfile\desktop\mlbighomework\output2', help='image path')
 
     parser.add_argument('--model', default='fasterrcnn_resnet50_fpn', help='model')
     #parser.add_argument('--score', type=float, default=0.8, help='objectness score threshold')
@@ -579,26 +579,26 @@ if __name__ == '__main__':
     global imagesetfile
     imagesetfile = args.data_path+os.sep+"test"+os.sep+"Image"
 
-    do_python_eval(args.out_path, use_07=False)
+    #do_python_eval(args.out_path, use_07=False)
 
-    # # Model creating
-    # print("Creating model")
-    # model = torchvision.models.detection.__dict__[args.model](num_classes=len(names), pretrained=False)
-    # if args.gpu == '0':
-    #     model = model.cpu()
-    # else:
-    #     model = model.cuda()
-    #
-    # model.eval()
-    # if args.gpu == '0':
-    #     save = torch.load(args.model_path,map_location='cpu')
-    # else:
-    #     save = torch.load(args.model_path)
-    #
-    # model.load_state_dict(save['model'])
-    #
-    # dataset, _ = get_dataset("myselfXray", "test", get_transform(train=False), data_path=args.data_path)
-    # with torch.no_grad():
-    #     test_net(args.data_path, args.cache_path, args.out_path, model, args.gpu, dataset)
+    # Model creating
+    print("Creating model")
+    model = torchvision.models.detection.__dict__[args.model](num_classes=len(names), pretrained=False)
+    if args.gpu == '0':
+        model = model.cpu()
+    else:
+        model = model.cuda()
+
+    model.eval()
+    if args.gpu == '0':
+        save = torch.load(args.model_path,map_location='cpu')
+    else:
+        save = torch.load(args.model_path)
+
+    model.load_state_dict(save['model'])
+
+    dataset, _ = get_dataset("myselfXray", "test", get_transform(train=False), data_path=args.data_path)
+    with torch.no_grad():
+        test_net(args.data_path, args.cache_path, args.out_path, model, args.gpu, dataset)
 
 

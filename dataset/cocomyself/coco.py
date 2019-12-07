@@ -87,20 +87,30 @@ def loadMyselfAnnotationFile_to_dataset(annotation_file):
         with open(annotation_file+os.sep+file_name, 'r', encoding='UTF-8') as f:
             lines = f.readlines()
             for line in lines:
+                linPireList = line.split(" ")
+                if len(linPireList) != 6:
+                    print('标注数据的行分割后不是6部分')
+
+                name = linPireList[1]
+                if name != '带电芯充电宝' and name != '不带电芯充电宝':
+                    continue
+                if name == '带电芯充电宝':
+                    isCategory = 1
+                if name == '不带电芯充电宝':
+                    isCategory = 2
+
+
                 j = j + 1
                 oneannotations = {}
                 oneannotations["id"] = j
                 oneannotations["image_id"] = i
-                isCategory = 1
-                if "不" in line:
-                    isCategory = 2
+
+
                 oneannotations["category_id"] = isCategory
                 oneannotations["segmentation"] = []
                 oneannotations["area"] = 0
                 oneannotations["iscrowd"] = 0
-                linPireList = line.split(" ")
-                if len(linPireList) != 6:
-                    print('标注数据的行分割后不是6部分')
+
                 x = int(linPireList[2])
                 y = int(linPireList[3])
                 w = int(linPireList[4]) - x

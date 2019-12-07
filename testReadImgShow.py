@@ -46,7 +46,7 @@ def main():
             y = linPireList[3]
             w = linPireList[4]
             h = linPireList[5]
-            boxe = [int(x),int(y),int(w),int(h)]
+            boxe = [int(float(x)),int(float(y)),int(float(w)),int(float(h))]
             boxes.append(boxe)
 
     k = 0
@@ -54,10 +54,12 @@ def main():
         k = k +1
         x1, y1, x2, y2 = boxe[0], boxe[1], boxe[2], boxe[3]
         name = names[k-1]
-        if "不" in name:
-            name = 'coreless'
-        else:
+        if name != '带电芯充电宝' and name != '不带电芯充电宝':
+            continue
+        if name == '带电芯充电宝':
             name = 'core'
+        if name == '不带电芯充电宝':
+            name = 'coreless'
         print(x1, y1, x2, y2)
         cv2.rectangle(src_img, (x1, y1), (x2, y2), random_color(), thickness=2)
         #cv2.rectangle(src_img, (1, 1), (111, 111), (0, 255, 0), 1)
