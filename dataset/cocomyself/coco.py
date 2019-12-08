@@ -111,10 +111,10 @@ def loadMyselfAnnotationFile_to_dataset(annotation_file):
                 oneannotations["area"] = 0
                 oneannotations["iscrowd"] = 0
 
-                x = int(linPireList[2])
-                y = int(linPireList[3])
-                w = int(linPireList[4]) - x
-                h = int(linPireList[5]) - y
+                x = int(float(linPireList[2]))
+                y = int(float(linPireList[3]))
+                w = int(float(linPireList[4])) - x
+                h = int(float(linPireList[5])) - y
                 oneannotations["bbox"] = [x, y, w, h]
                 annotations.append(oneannotations)
         images.append(oneImgInfo)

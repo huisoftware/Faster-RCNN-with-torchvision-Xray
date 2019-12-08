@@ -282,7 +282,7 @@ if __name__ == "__main__":
                 y = linPireList[3]
                 w = linPireList[4]
                 h = linPireList[5]
-                boxe = [int(x), int(y), int(w), int(h)]
+                boxe = [int(float(x)), int(float(y)), int(float(w)), int(float(h))]
                 boxes.append(boxe)
 
         if args.type == 'x':
@@ -310,7 +310,7 @@ if __name__ == "__main__":
                 img, boxes = vertical_flip(src_img, np.array(boxes))
             else:
                 print("不支持的参数")
-            break
+                break
         else:
             print("不支持的参数")
             break
