@@ -159,6 +159,7 @@ def main():
         evaluate(model, data_loader_test, device=device)
         return
 
+
     # Training
     print('Start training')
     start_time = time.time()
