@@ -6,7 +6,7 @@ import numpy as np
 import sys
 sys.path.append('./')
 import random
-
+#--image_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\test\Image\coreless_battery00006938.jpg --model_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\myout\model_19.pth
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Detection')
 
@@ -65,6 +65,7 @@ def main():
     for idx in range(boxes.shape[0]):
         if scores[idx] >= args.score:
             x1, y1, x2, y2 = boxes[idx][0], boxes[idx][1], boxes[idx][2], boxes[idx][3]
+            print(x1, y1, x2, y2)
             name = names.get(str(labels[idx].item()))
             # cv2.rectangle(img,(x1,y1),(x2,y2),colors[labels[idx].item()],thickness=2)
             cv2.rectangle(src_img,(x1,y1),(x2,y2),random_color(),thickness=2)

@@ -98,19 +98,19 @@ def parse_rec(filename, imgpath):
                 name = 'core'
             if name == '不带电芯充电宝':
                 name = 'coreless'
-            xmin = int(temp[2])
+            xmin = float(temp[2])
             # 只读取V视角的
-            if int(xmin) > width:
+            if float(xmin) > width:
                 continue
             if xmin < 0:
                 xmin = 1
-            ymin = int(temp[3])
+            ymin = float(temp[3])
             if ymin < 0:
                 ymin = 1
-            xmax = int(temp[4])
+            xmax = float(temp[4])
             if xmax > width:
                 xmax = width - 1
-            ymax = int(temp[5])
+            ymax = float(temp[5])
             if ymax > height:
                 ymax = height - 1
             ##name
@@ -379,8 +379,11 @@ cachedir: Directory for caching the annotations
                         R['det'][jmax] = 1
                     else:
                         fp[d] = 1.#预测为正，实际为负
+                        print("预测为正，实际为负"+str(image_ids[d]) + " " + str(BBGT[:, 0]) + " ," + str(BBGT[:, 1]) + " ," + str(BBGT[:, 2]) + " ," + str(BBGT[:, 3]) + "  " +str(bb[0]) + " ," + str(bb[1]) + " ," + str(bb[2]) + " ," + str(bb[3]))
             else:
                 fp[d] = 1.
+                if BBGT.size > 0:
+                    print("没有超过阈值"+str(image_ids[d]) + " " + str(BBGT[:, 0]) + " ," + str(BBGT[:, 1]) + " ," + str(BBGT[:, 2]) + " ," + str(BBGT[:, 3]) + "  " +str(bb[0]) + " ," + str(bb[1]) + " ," + str(bb[2]) + " ," + str(bb[3]))
 
         # compute precision recall
         fp = np.cumsum(fp)
@@ -564,7 +567,8 @@ def evaluate_detections(box_list, output_dir, dataset):
 #     devkit_path = args.save_folder
 
 # --model_path D:\sysfile\desktop\mlbighomework\model_19.pth --data_path D:\sysfile\desktop\mlbighomework\output --cache_path D:\sysfile\desktop\mlbighomework\cache --out_path D:\sysfile\desktop\mlbighomework\output2 --gpu 0
-#
+# --model_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\myout\model_19.pth --data_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output --cache_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\cache --out_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\output2 --gpu 0
+# --model_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset\myout\model_19.pth --data_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset --cache_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset\cache --out_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset\output2 --gpu 0
 if __name__ == '__main__':
     args = get_args()
 
@@ -579,7 +583,7 @@ if __name__ == '__main__':
     global imagesetfile
     imagesetfile = args.data_path+os.sep+"test"+os.sep+"Image"
 
-    #do_python_eval(args.out_path, use_07=False)
+    # do_python_eval(args.out_path, use_07=False)
 
     # Model creating
     print("Creating model")

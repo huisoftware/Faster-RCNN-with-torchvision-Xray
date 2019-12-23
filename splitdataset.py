@@ -53,8 +53,8 @@ def outputfile(srcfile,outputdir):
 
 
 if __name__  == "__main__":
-    srcdir = "D:\\sysfile\\desktop\\mlbighomework\\"
-    outputdir = "D:\\sysfile\\desktop\\mlbighomework\\output\\"
+    srcdir = "F:\\Masters2019\\lh\\dl\\objectdetection\\faster_r_cnn\\transdata\\"
+    outputdir = "F:\\Masters2019\\lh\\dl\\objectdetection\\faster_r_cnn\\transdata\\output\\"
     for i in range(2):
         if i==0:
             outputfile(srcdir+"core_500", outputdir)

@@ -321,7 +321,17 @@ if __name__ == "__main__":
             newlines = []
             for line in lines:
                 linPireList = line.split(" ")
-                newline = linPireList[0]+" "+linPireList[1]+" "+str(boxes[i][0])+" "+str(boxes[i][1])+" "+str(boxes[i][2])+" "+str(boxes[i][3])+"\n"
+                if args.type == 'x':
+                    if args.param == '1':
+                        newline = linPireList[0] + " " + linPireList[1] + " " + str(boxes[i][2]) + " " + str(
+                            boxes[i][1]) + " " + str(boxes[i][0]) + " " + str(boxes[i][3]) + "\n"
+                    elif args.param == '2':
+                        newline = linPireList[0] + " " + linPireList[1] + " " + str(boxes[i][0]) + " " + str(
+                            boxes[i][3]) + " " + str(boxes[i][2]) + " " + str(boxes[i][1]) + "\n"
+                    else:
+                        continue
+                else:
+                    newline = linPireList[0]+" "+linPireList[1]+" "+str(boxes[i][0])+" "+str(boxes[i][1])+" "+str(boxes[i][2])+" "+str(boxes[i][3])+"\n"
                 i = i+1
                 newlines.append(newline)
             with open(newAnnotationAllPath, 'w', encoding='UTF-8') as f1:

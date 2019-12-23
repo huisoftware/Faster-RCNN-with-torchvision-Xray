@@ -10,7 +10,7 @@ sys.path.append('./')
 import coco_names
 import random
 
-
+# --image_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\test\Image\coreless_battery00006938.jpg --annotation_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\transdata\output\test\Annotation\coreless_battery00006938.txt
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Detection')
 

@@ -17,7 +17,7 @@ import cv2
 import random
 
 def get_args():
-    #--data_path D:\sysfile\desktop\cocotest\coco2017\coco\2017 --dataset coco --device cpu --epochs 2 --lr 0.001 --world-size 0 --b 1 --output-dir D:\sysfile\desktop\cocotest\coco2017out -j 1
+    #--data_path F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset --dataset myselfXray --device cuda --epochs 20 --lr 0.001 --world-size 0 --b 1 --output-dir F:\Masters2019\lh\dl\objectdetection\faster_r_cnn\dataset\myout -j 1 --distributed False --parallel False
     # python -m torch.distributed.launch --use_env train.py --data_path 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXray' --dataset 'myselfXray' --device 'cpu' --epochs 200 --lr 0.001 --world-size 3 --b 4 --output-dir 'F:\JetBrains\PyCharm 2019.1.2\workspace1\myselfXrayOutPut'
     # python detect.py --model_path result/model_13.pth --image_path imgs/1.jpg
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Training')

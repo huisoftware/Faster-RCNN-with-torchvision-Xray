@@ -231,6 +231,12 @@ class MetricLogger(object):
                         i, len(iterable), eta=eta_string,
                         meters=str(self),
                         time=str(iter_time), data=str(data_time)))
+                with open('F:\\Masters2019\\lh\\dl\\objectdetection\\faster_r_cnn\\transdata\\output\\myout\\loss.txt', 'a') as f1:
+                    f1.write(str(log_msg.format(
+                        i, len(iterable), eta=eta_string,
+                        meters=str(self),
+                        time=str(iter_time), data=str(data_time),
+                        memory=torch.cuda.max_memory_allocated() / MB))+"\n")
             i += 1
             end = time.time()
         total_time = time.time() - start_time
