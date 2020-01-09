@@ -49,8 +49,10 @@ def test(img_path, anno_path):
     # 获取要测试的图像文件夹下所有图像文件的文件名
     img_list = os.listdir(img_path)
     # 遍历所有图像
+    imgint = 0
     for img_file in img_list:
-        print(img_file)
+        imgint = imgint + 1
+        print(imgint)
 
         src_img = cv2.imread(os.path.join(img_path,img_file))
         img = cv2.cvtColor(src_img,cv2.COLOR_BGR2RGB)
