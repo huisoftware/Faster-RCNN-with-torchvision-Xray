@@ -14,8 +14,8 @@ import random
 def get_args():
     parser = argparse.ArgumentParser(description='Pytorch Faster-rcnn Detection')
 
-    parser.add_argument('--image_path',default="D:\sysfile\desktop\mlbighomework\output/test\Image\coreless_battery00009028.jpg", type=str, help='image path')
-    parser.add_argument('--annotation_path',default="D:\sysfile\desktop\mlbighomework\output/test\Annotation\coreless_battery00009028.txt", type=str, help='annotation path')
+    parser.add_argument('--image_path',default="D:\\sysfile\\desktop\\mlbighomework\\finally\\Image_test\\core_battery00000004.jpg", type=str, help='image path')
+    parser.add_argument('--annotation_path',default="D:\\sysfile\\desktop\\mlbighomework\\finally\\Anno_test\\core_battery00000004.txt", type=str, help='annotation path')
 
     args = parser.parse_args()
 

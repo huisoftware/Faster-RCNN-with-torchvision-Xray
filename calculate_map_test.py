@@ -19,8 +19,8 @@ parser = argparse.ArgumentParser(description='Single Shot MultiBox Detector Trai
 parser.add_argument('--predicted_file', default='', type=str, help='Checkpoint state_dict file for transfer learning')
 args = parser.parse_args()
 
-annopath = os.path.join('/home/rustin/weiyanlu/Anno_test', '%s.xml')#测试集标注文件路径
-test_imagesetfile = '/home/rustin/weiyanlu/core_coreless_test.txt'#测试集里面的图片名
+annopath = 'D:\\sysfile\\desktop\\mlbighomework\\finally\\Anno_test\\'#测试集标注文件路径
+test_imagesetfile = 'D:\\sysfile\\desktop\\mlbighomework\\finally\\core_coreless_test.txt'#测试集里面的图片名
 '''
 def get_voc_results_file_template(image_set, cls):
     # VOCdevkit/VOC2007/results/det_test_aeroplane.txt
@@ -150,7 +150,7 @@ cachedir: Directory for caching the annotations
 
     recs = {}
     for i, imagename in enumerate(imagenames):
-        recs[imagename] = parse_rec(annopath % (imagename))
+        recs[imagename] = parse_rec(annopath+imagename+'.txt')
         if i % 100 == 0:
             print('Reading annotation for {:d}/{:d}'.format(
                 i + 1, len(imagenames)))

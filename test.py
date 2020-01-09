@@ -39,6 +39,12 @@ def test(img_path, anno_path):
         model = model.cuda()
 
     model.eval()
+    if args.gpu =='0':
+        save = torch.load(args.model_path,map_location='cpu')
+    else:
+        save = torch.load(args.model_path)
+
+    model.load_state_dict(save['model'])
 
     # 获取要测试的图像文件夹下所有图像文件的文件名
     img_list = os.listdir(img_path)
@@ -79,4 +85,4 @@ def test(img_path, anno_path):
 
 
 if __name__ == '__main__':
-    test('F:\\Masters2019\\lh\\dl\\objectdetection\\faster_r_cnn\\transdata\\output\\test\\Image\\', None)
+    test('D:\\sysfile\\desktop\\mlbighomework\\finally\\Image_test\\', None)
